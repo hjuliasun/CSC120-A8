@@ -21,16 +21,16 @@ public class CatGPT implements Contract{
 
 
     /** CatGPT constructor
-     * @param name,breed
+     * @param name,size
      * user can decide the name of the cat 
      */
 
     public CatGPT(String name, double size){
         this.name = name;
         this.size = size;
-        this.breed = getBreed(new Random().nextInt(catType.size()));
+        this.breed = this.catType.get(new Random().nextInt(this.catType.size()));
         this.history = new ArrayList<String>();
-        this.grabactions = new ArrayList<String>(Arrays.asList("is munching on", "playing with", "ripping apart the", "having the zoomies. Ignored your", "shows distate for", "is hissing at", "did nothing with your", "walked away", "took a nap. They don't want your", "waddled away. waddle waddle waddle til the very next day. rip your", "meow"));
+        this.grabactions = new ArrayList<String>(Arrays.asList("is munching on", "playing with", "ripping apart the", "having the zoomies. Ignored your", "shows distate for", "is hissing at", "did nothing with your", "walked away", "took a nap. They don't want your", "waddled away. waddle waddle waddle til the very next day. rip your"));
         this.dropactions = new ArrayList<String>(Arrays.asList("ran away.", "refuses to drop the item", "dropped your item. Here.", "hissed at you", "... \n nothing happened", "meow meow meowwww" ));
         this.actions = new ArrayList<String>(Arrays.asList("meow", "mrrrrr", "meow meow meooooow", "grrrr mwrrr", "hissss"));
         this.treats = new ArrayList<String>(Arrays.asList("candy", "fish", "kibble", "Fancy Feast", "Purina Wet Cat Food", "bird", "lizard", "BLUE Wilderness Adult Dry Cat Food", "Friskies Seafood Sensation"));
@@ -56,10 +56,10 @@ public class CatGPT implements Contract{
      * @return CatAction describing what the cat has done
      * */ 
     public String drop(String item){
-        String CatAction = this.dropactions.get(new Random().nextInt(this.dropactions.size()));
-        System.out.println(this.name + " " + CatAction);
-        this.history.add(this.name + " " + CatAction);
-        return CatAction;
+        String catAction = this.dropactions.get(new Random().nextInt(this.dropactions.size()));
+        System.out.println(this.name + " " + catAction);
+        this.history.add(this.name + " " + catAction);
+        return catAction;
     }
 
     /** Method allows user to examine cat
@@ -70,29 +70,39 @@ public class CatGPT implements Contract{
         if (bodyPart.contains("head") || bodyPart.contains("ears")){
             String catTalk = this.actions.get(new Random().nextInt(this.actions.size()));
             System.out.println(catTalk);
+            this.history.add(catTalk);
         }
         if (bodyPart.contains("paws")){
             System.out.println("omg check out it's little beans! be careful they might scratch you");
+            this.history.add("omg check out it's little beans! be careful they might scratch you");
             boolean scratch = new Random().nextBoolean();
             if (scratch == true){
                 System.out.println(this.name + " scratched you! Better apologize :-(");
+                this.history.add(this.name + " scratched you! Better apologize :-(");
             }
             else{
                 System.out.println("hmmm" + this.name + " doesn't seem to mind...let's see what they have to say");
                 System.out.println(this.actions.get(new Random().nextInt(this.actions.size())));
+                this.history.add("hmmm" + this.name + " doesn't seem to mind...let's see what they have to say");
+                this.history.add(this.actions.get(new Random().nextInt(this.actions.size())));
             }
         }
         if (bodyPart.contains("tail") || bodyPart.contains("belly")){
             boolean swish = new Random().nextBoolean();
             if (swish == true){
                 System.out.println(this.name + " might not like that!");
+                this.history.add(this.name + " might not like that!");
             }
             else{
                 System.out.println("hmmm" + this.name + " doesn't seem to mind their fluffy tail...let's see what they have to say");
                 System.out.println(this.actions.get(new Random().nextInt(this.actions.size())));
+                this.history.add("hmmm" + this.name + " doesn't seem to mind their fluffy tail...let's see what they have to say");
+                this.history.add(this.actions.get(new Random().nextInt(this.actions.size())));
+
             }
         if (bodyPart.contains("whiskers")){
             System.out.println("Please do not the cat.");
+            this.history.add("Please do not the cat.");
 
         }
         else{
@@ -129,38 +139,52 @@ public class CatGPT implements Contract{
             if (direction.contains("north")){
                 this.yLocation += 1;
                 System.out.println(this.name + " moved north by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+                this.history.add(this.name + " moved north by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
             }
             if (direction.contains("south")) {
                 this.yLocation -= 1;
                 System.out.println(this.name + " moved South by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+                this.history.add(this.name + " moved South by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+
             }
             if (direction.contains("west")){
                 this.xLocation -= 1;
                 System.out.println(this.name + " moved West by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+                this.history.add(this.name + " moved West by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+
             }
             if (direction.contains("east")){
                 this.xLocation += 1;
                 System.out.println(this.name + " moved East by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+                this.history.add(this.name + " moved East by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+
             }
             if (direction.contains("southwest")){
                 this.xLocation -= 1;
                 this.yLocation -= 1;
                 System.out.println(this.name + " moved South West by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+                this.history.add(this.name + " moved South West by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+
             }
             if (direction.contains("southeast")){
                 this.xLocation += 1;
                 this.yLocation -= 1;
                 System.out.println(this.name + " moved South East by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+                this.history.add(this.name + " moved South East by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+
             }
             if (direction.contains("northwest")){
                 this.xLocation -= 1;
                 this.yLocation += 1;
                 System.out.println(this.name + " moved North West by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+                this.history.add(this.name + " moved North West by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+
             }
             if (direction.contains("northeast")){
                 this.xLocation += 1;
                 this.yLocation += 1;
                 System.out.println(this.name + " moved North East by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+                this.history.add(this.name + " moved North East by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
             }
         
         if (walkDecision == false) {
@@ -175,7 +199,9 @@ public class CatGPT implements Contract{
     * @return RuntimeException message 
     */
     public boolean fly(int x, int y){
-        throw new RuntimeException("Sorry a cat cannot fly.");
+        System.out.println("Sorry a cat cannot fly.");
+        this.history.add("Sorry a cat cannot fly.");
+        return false;
     }
 
     /**Method to shrink the cat????
@@ -185,6 +211,7 @@ public class CatGPT implements Contract{
     public Number shrink(){
         this.size = this.size*.5;
         System.out.println(this.name + " shrunk and is now" + this.size + " pds.");
+        this.history.add(this.name + " shrunk and is now" + this.size + " pds.");
         return this.size;
     }
 
@@ -195,9 +222,10 @@ public class CatGPT implements Contract{
     public Number grow(){
         String treat = this.treats.get(new Random().nextInt(this.treats.size()));
         System.out.println("You just gave " + this.name + " a " + treat);
+        this.history.add("You just gave " + this.name + " a " + treat);
         this.size = this.size*1.2;
         System.out.println(this.name + " grew and is now" + this.size + " pds.");
-
+        this.history.add(this.name + " grew and is now" + this.size + " pds.");
         return this.size;
     }
 
@@ -208,12 +236,16 @@ public class CatGPT implements Contract{
     public void rest(){
         boolean napDecision = new Random().nextBoolean();
         if (!napDecision == true){
-            throw new RuntimeException(this.name + " doesn't want to loaf right now.");
+            System.out.println(this.name + " doesn't want to loaf right now.");
+            this.history.add(this.name + " doesn't want to loaf right now.");
         }
         else{
             System.out.println(this.actions.get(new Random().nextInt(this.actions.size())));
             System.out.println(this.name + " decided to nap with you! Loaf time :3");
+            this.history.add(this.actions.get(new Random().nextInt(this.actions.size())));
+            this.history.add(this.name + " decided to nap with you! Loaf time :3");
         }
+        
     }
 
     /** Return to previous action in the history array list
@@ -236,12 +268,21 @@ public class CatGPT implements Contract{
     public void getTranscript(){
         System.out.println(this.history);
     }
-    public String getBreed(int random){
-        String rBreed = catType.get(random);
-        return rBreed;
+    public void getBreed(){
+        System.out.println(this.breed);
+        this.history.add(this.breed);
+
     }
     public void showOptions() {
         System.out.println("Available options for " + this.name + ":\n + undo() \n + grow() \n + rest() \n + shrink()\n + fly()\n + walk()\n + use() \n + examine()\n + ");
+        this.history.add("Available options for " + this.name + ":\n + undo() \n + grow() \n + rest() \n + shrink()\n + fly()\n + walk()\n + use() \n + examine()\n + ");
+    
+    }
+
+    public void showDirections() {
+        System.out.println("Available options for " + this.name + ":\n + north \n + east \n + south \n + west\n + southwest\n + southeast\n + northeast \n + northwest\n ");
+        this.history.add("Available options for " + this.name + ":\n + north \n + east \n + south \n + west\n + southwest\n + southeast\n + northeast \n + northwest\n ");
+ 
     }
 
     public String toString() {
@@ -251,8 +292,19 @@ public class CatGPT implements Contract{
 
 
     public static void main(String[] args) {
-        CatGPT cat = new CatGPT("bean", 10.75);
-        cat.grab("apple");
+        CatGPT bean = new CatGPT("bean", 10.75);
+        bean.getBreed();
+        bean.grab("apple");
+        bean.use("feather");
+        bean.examine("belly");
+        bean.walk("southwest");
+        bean.grow();
+        bean.rest();
+        bean.getTranscript();
+        bean.undo(3);
+        System.out.print(bean);
+
+
 
 
 
