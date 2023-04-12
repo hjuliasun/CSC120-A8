@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.*;
@@ -7,26 +6,38 @@ import java.util.*;
 public class CatGPT implements Contract{
 
     public String name;
-    public CatType breed;
+    public String breed;
     public ArrayList<String> actions;
     public ArrayList<String> items;
     public ArrayList<String> history;
     private ArrayList<String> grabactions;
     private ArrayList<String> dropactions;
+    private ArrayList<String> treats;
+    public int xLocation;
+    public int yLocation;
+    private double size;
+    public ArrayList<String> catType = new ArrayList<>(List.of( "CRAZY_ORANGE", "TUXEDO", "CALICO", "TABBY", "PERSIAN", "MAINE_COON", "SIAMESE"));
+
+
 
     /** CatGPT constructor
      * @param name,breed
      * user can decide the name of the cat 
      */
 
-    public CatGPT(String name){
+    public CatGPT(String name, double size){
         this.name = name;
-        String Breed = this.actions.get(new Random().nextInt(CatType.values().length));;
+        this.size = size;
+        this.breed = getBreed(new Random().nextInt(catType.size()));
         this.history = new ArrayList<String>();
         this.grabactions = new ArrayList<String>(Arrays.asList("is munching on", "playing with", "ripping apart the", "having the zoomies. Ignored your", "shows distate for", "is hissing at", "did nothing with your", "walked away", "took a nap. They don't want your", "waddled away. waddle waddle waddle til the very next day. rip your", "meow"));
         this.dropactions = new ArrayList<String>(Arrays.asList("ran away.", "refuses to drop the item", "dropped your item. Here.", "hissed at you", "... \n nothing happened", "meow meow meowwww" ));
-
+        this.actions = new ArrayList<String>(Arrays.asList("meow", "mrrrrr", "meow meow meooooow", "grrrr mwrrr", "hissss"));
+        this.treats = new ArrayList<String>(Arrays.asList("candy", "fish", "kibble", "Fancy Feast", "Purina Wet Cat Food", "bird", "lizard", "BLUE Wilderness Adult Dry Cat Food", "Friskies Seafood Sensation"));
+        this.xLocation = 0;
+        this.yLocation = 0;
     }
+
     
     /** Random grab method for cat 
      * @param item
@@ -42,7 +53,7 @@ public class CatGPT implements Contract{
 
     /** Random drop method for cat 
      * @param item
-     * @return CatAction
+     * @return CatAction describing what the cat has done
      * */ 
     public String drop(String item){
         String CatAction = this.dropactions.get(new Random().nextInt(this.dropactions.size()));
@@ -50,28 +61,159 @@ public class CatGPT implements Contract{
         this.history.add(this.name + " " + CatAction);
         return CatAction;
     }
+
+    /** Method allows user to examine cat
+     * @param bodyPart
+     */
     
-    public void examine(String item){
+    public void examine(String bodyPart){
+        if (bodyPart.contains("head") || bodyPart.contains("ears")){
+            String catTalk = this.actions.get(new Random().nextInt(this.actions.size()));
+            System.out.println(catTalk);
+        }
+        if (bodyPart.contains("paws")){
+            System.out.println("omg check out it's little beans! be careful they might scratch you");
+            boolean scratch = new Random().nextBoolean();
+            if (scratch == true){
+                System.out.println(this.name + " scratched you! Better apologize :-(");
+            }
+            else{
+                System.out.println("hmmm" + this.name + " doesn't seem to mind...let's see what they have to say");
+                System.out.println(this.actions.get(new Random().nextInt(this.actions.size())));
+            }
+        }
+        if (bodyPart.contains("tail") || bodyPart.contains("belly")){
+            boolean swish = new Random().nextBoolean();
+            if (swish == true){
+                System.out.println(this.name + " might not like that!");
+            }
+            else{
+                System.out.println("hmmm" + this.name + " doesn't seem to mind their fluffy tail...let's see what they have to say");
+                System.out.println(this.actions.get(new Random().nextInt(this.actions.size())));
+            }
+        if (bodyPart.contains("whiskers")){
+            System.out.println("Please do not the cat.");
 
+        }
+        else{
+            throw new RuntimeException("Sorry, not a feature of this cat.");
+        }
+        }
     }
+
+    // /**Map map mapppp */
+    // public Map(int x, int y){
+    //     this.grid = new String[x][y];
+    //     this.x = x;
+    //     this.y = y;
+    // }
+
+    /**Random use method that allows cat to play with item based on grab and drop method
+     * @param item
+     */
+
+
     public void use(String item){
+        this.grab(item);
+        this.drop(item);
 
     }
+
+/**Random coordinate location method that walks one step
+ * @param direction
+ * @return boolean of whether the cat decided to walk
+ */
     public boolean walk(String direction){
+        boolean walkDecision = new Random().nextBoolean();
+        if (walkDecision == true){
+            if (direction.contains("north")){
+                this.yLocation += 1;
+                System.out.println(this.name + " moved north by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+            }
+            if (direction.contains("south")) {
+                this.yLocation -= 1;
+                System.out.println(this.name + " moved South by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+            }
+            if (direction.contains("west")){
+                this.xLocation -= 1;
+                System.out.println(this.name + " moved West by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+            }
+            if (direction.contains("east")){
+                this.xLocation += 1;
+                System.out.println(this.name + " moved East by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+            }
+            if (direction.contains("southwest")){
+                this.xLocation -= 1;
+                this.yLocation -= 1;
+                System.out.println(this.name + " moved South West by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+            }
+            if (direction.contains("southeast")){
+                this.xLocation += 1;
+                this.yLocation -= 1;
+                System.out.println(this.name + " moved South East by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+            }
+            if (direction.contains("northwest")){
+                this.xLocation -= 1;
+                this.yLocation += 1;
+                System.out.println(this.name + " moved North West by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+            }
+            if (direction.contains("northeast")){
+                this.xLocation += 1;
+                this.yLocation += 1;
+                System.out.println(this.name + " moved North East by one step. \n Here are the coordinates" + "(" + this.xLocation + this.yLocation + ")");
+            }
         
-
+        if (walkDecision == false) {
+          throw new RuntimeException("Sorry, this cat refuses to move for you.");  
+        }
+        }       
+        return walkDecision;
     }
+
+    /** Cat's can't fly!
+    * @param x,y
+    * @return RuntimeException message 
+    */
     public boolean fly(int x, int y){
-
+        throw new RuntimeException("Sorry a cat cannot fly.");
     }
+
+    /**Method to shrink the cat????
+    * @param newSize
+    * @return Number
+    */
     public Number shrink(){
-
+        this.size = this.size*.5;
+        System.out.println(this.name + " shrunk and is now" + this.size + " pds.");
+        return this.size;
     }
+
+    /** Method to feed the cat
+     * @param 
+    * @return Number
+    */
     public Number grow(){
+        String treat = this.treats.get(new Random().nextInt(this.treats.size()));
+        System.out.println("You just gave " + this.name + " a " + treat);
+        this.size = this.size*1.2;
+        System.out.println(this.name + " grew and is now" + this.size + " pds.");
 
+        return this.size;
     }
-    public void rest(){
 
+    /** Method to nap with the cat?! or let the cat nap on you :)
+     * @param 
+    * @return Number
+    */
+    public void rest(){
+        boolean napDecision = new Random().nextBoolean();
+        if (!napDecision == true){
+            throw new RuntimeException(this.name + " doesn't want to loaf right now.");
+        }
+        else{
+            System.out.println(this.actions.get(new Random().nextInt(this.actions.size())));
+            System.out.println(this.name + " decided to nap with you! Loaf time :3");
+        }
     }
 
     /** Return to previous action in the history array list
@@ -88,18 +230,28 @@ public class CatGPT implements Contract{
         }        
     }
 
+    
+
       /** Accessors */
     public void getTranscript(){
         System.out.println(this.history);
+    }
+    public String getBreed(int random){
+        String rBreed = catType.get(random);
+        return rBreed;
     }
     public void showOptions() {
         System.out.println("Available options for " + this.name + ":\n + undo() \n + grow() \n + rest() \n + shrink()\n + fly()\n + walk()\n + use() \n + examine()\n + ");
     }
 
+    public String toString() {
+        return this.name + " is a " + this.breed + "and they weigh  " + this.size + " pds.";
+    }
+
 
 
     public static void main(String[] args) {
-        CatGPT cat = new CatGPT("bean");
+        CatGPT cat = new CatGPT("bean", 10.75);
         cat.grab("apple");
 
 
